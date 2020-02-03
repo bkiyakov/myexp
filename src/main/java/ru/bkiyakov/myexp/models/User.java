@@ -1,6 +1,8 @@
 package ru.bkiyakov.myexp.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -10,6 +12,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String username;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Expense> expenses = new ArrayList<>();
 
     public User(){}
 
@@ -29,11 +33,22 @@ public class User {
         this.username = username;
     }
 
+    public void addExpense(Expense expense){
+        expenses.add(expense);
+        expense.setUser(this);
+    }
+
+    public void removeExpense(Expense expense){
+        expenses.remove(expense);
+        expense.setUser(null);
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", expenses=" + expenses +
                 '}';
     }
 }
