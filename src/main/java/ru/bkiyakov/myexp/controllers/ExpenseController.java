@@ -19,6 +19,7 @@ public class ExpenseController {
 
     @GetMapping("/")
     public List<Expense> findAll(){
+
         return expenseRepository.findAll();
     }
 
@@ -29,11 +30,13 @@ public class ExpenseController {
 
     @PostMapping("/")
     public Expense save(Expense expense){
+
         return expenseRepository.save(expense);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
+
         expenseRepository.deleteById(id);
     }
 

@@ -23,13 +23,14 @@ public class Expense {
 
     public Expense() {}
 
-    public Expense(Date createdDate, int sum){
+    public Expense(User user, Date createdDate, int sum){
+        this.user = user;
         this.createdDate = createdDate;
         this.sum = sum;
     }
 
-    public Expense(Date createdDate, int sum, String note){
-        this(createdDate, sum);
+    public Expense(User user, Date createdDate, int sum, String note){
+        this(user, createdDate, sum);
         this.note = note;
     }
 
