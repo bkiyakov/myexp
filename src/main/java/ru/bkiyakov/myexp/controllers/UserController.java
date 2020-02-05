@@ -1,6 +1,7 @@
 package ru.bkiyakov.myexp.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.bkiyakov.myexp.exceptions.UserNotFoundException;
 import ru.bkiyakov.myexp.models.Expense;
@@ -8,6 +9,7 @@ import ru.bkiyakov.myexp.models.User;
 import ru.bkiyakov.myexp.repositories.ExpenseRepository;
 import ru.bkiyakov.myexp.repositories.UserRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -32,9 +34,10 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public User save(@RequestBody User user){
-
-        return userRepository.save(user);
+    @ResponseStatus(HttpStatus.CREATED) //201
+    public void save(HttpServletResponse response, @RequestBody User user){
+        userRepository.save(user);
+        response.addHeader("Location", "/users/" + user.getId());
     }
 
     @DeleteMapping("/{id}")
@@ -62,11 +65,13 @@ public class UserController {
     }
 
     @PostMapping("/{user_id}/addexpense")
-    public void addExpense(@PathVariable Long user_id, @RequestBody Expense newExpense){
+    @ResponseStatus(HttpStatus.CREATED) //201
+    public void addExpense(HttpServletResponse response, @PathVariable Long user_id, @RequestBody Expense newExpense){
         User user = userRepository.findById(user_id).orElseThrow(() -> new UserNotFoundException(user_id));
         System.out.println("DEBUG\n" + user);
         Expense expense = new Expense(user, newExpense.getCreatedDate(), newExpense.getSum(), newExpense.getNote());
         System.out.println("DEBUG\n" + expense);
         expenseRepository.save(expense);
+        response.addHeader("Location", "/expenses/" + expense.getId());
     }
 }
